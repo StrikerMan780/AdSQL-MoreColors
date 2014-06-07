@@ -1,0 +1,111 @@
+@charset "UTF-8";
+body.display{
+  background-image: url('images/bg.jpg');
+  background-repeat: no-repeat;
+}
+
+html {
+overflow: auto;
+}
+
+h1{
+  color:#000000;
+  font-size:22px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+table 
+{
+	border-collapse: collapse;
+} 
+
+th{
+  color:#ffffff;
+  background-color:#000000;
+  text-align: center;
+  font-size:16px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+td.main{
+  color:#000000;
+  font-size:16px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+td.small{
+  color:#000000;
+  font-size:12px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+  height: 32px;
+}
+
+td.smallred{
+  color:#aa0000;
+  font-size:12px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+td.imgbg{
+  color:#ffffff;
+  /* background-color:#400080; */
+  background-color:#000000;
+  font-size:12px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+.account a:link {
+  text-decoration:none;
+  color:#000000;
+  font-size:12px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+.account a:visited {
+  text-decoration:none;
+  color:#000000;
+  font-size:12px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+.account a:hover {
+  text-decoration:none;
+  color:#ff6600;
+  font-size:12px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+.account a:active {
+  text-decoration:none;
+  color:#00B0A1;
+  font-size:12px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+ }
+ 
+ .dsa a:link {
+  text-decoration:none;
+  color:#000000;
+  font-size:16px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+.dsa a:visited {
+  text-decoration:none;
+  color:#000000;
+  font-size:16px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+.dsa a:hover {
+  text-decoration:none;
+  color:#ff6600;
+  font-size:16px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}
+
+.dsa a:active {
+  text-decoration:none;
+  color:#00B0A1;
+  font-size:16px;
+  font-family:Gill Sans MT, Trebuchet MS, Verdana, Optima;
+}

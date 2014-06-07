@@ -1,0 +1,28 @@
+// Define a *UNIQUE* Server ID string in this file
+// that is not a partial match of any other server's
+// Server ID string.  This Server ID string can then
+// be set/added for an ad you when you only want it
+// to display on servers with the Server ID('s) you
+// specify in the Advertisements Manager web interface.
+//
+// Choose your Server ID string carefully -- you do NOT
+// want to pick a string that is a substring match for
+// another server's ID.  For example if you had two
+// servers, one with Server ID "css1" and the other with
+// "css13", well, when the server with ID "css1" loads
+// ads from the database it is going to also load any ads
+// that have "css13" in the server ID, even if that is the
+// ONLY server ID specified for that ad.  "css1" is a
+// partial match for "css13".  Make sense?  Using "css001"
+// and "css013" would be better choices.
+//
+// Keep it simple - just use letters and numbers - no spaces
+// or special characters.
+//
+// Also, understand that the plugin will *ONLY* read
+// the _first_ uncommented line in this file!  If your
+// server defines the wrong ID, look at this file and
+// realize that the first line that doesn't start with
+// "//" is what it is trying to set for the server id!
+//
+server0123

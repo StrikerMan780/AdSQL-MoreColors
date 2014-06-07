@@ -1,0 +1,275 @@
+AdsQL Advertisements System Project Changelog
+by PharaohsPaw
+http://forums.pwng.net
+
+SourceMod Forums Post for this Plugin/Project:
+https://forums.alliedmods.net/showthread.php?t=203966
+old thread (v1.7.8):
+http://forums.alliedmods.net/showthread.php?t=150731
+
+v2.3.0 - 2.3.1 - 25 Jan 2012
+Updated code to support CS:GO
+
+v1.7.8 - 2.3.0 - 25 Dec 2012
+* Solved security issues with mysql injections.
+* Added new logotype. 
+* Now default css style is used by default.
+* Added count chars hint to know if your add is in game limit (not more than 190 chars), added count chars for serverid as well.
+
+v1.7.8 - 02 Apr 2011
+- Updated plugin - BUG FIX - move the SET NAMES 'utf8' query into SetupAds 
+so that UTF8 DB session parameters are set before *EVERY* ads load/reload.  
+Fixes issue discovered by Payalnick where ads requiring proper UTF8 charset 
+support do not display properly after ad reload or map change.  Thanks to
+Payalnick for finding and reporting the issue in enough detail to fix it.
+- No changes to Web UI in 1.7.8
+
+v1.7.7 - 31 Mar 2011
+Release of 1.7.7.  All existing users need to carefully read the changelog 
+since version 1.7.6.  A lot has changed and there are some things you are 
+going to need to do.
+
+v1.7.7b4 - 29 Mar 2011
+
+Plugin:
+- Add {OLIVE} color tag support for "Say"/chat-area type messages.
+Tested/working on CS:S, TF2, and L4D 1/2.  If it doesn't work on the (other)
+game you are trying to use it on, then the engine that game runs on doesn't 
+support it and there is NOTHING I can do (so don't ask!)
+
+- Added AutoExecConfig support.  On plugin *start*, the plugin will look for
+(game dir)/cfg/sourcemod/adsql.cfg and execute it if it is found.
+
+The plugin will *NOT* automatically create an adsql.cfg if it is missing, and 
+will *NOT* auto-execute adsql.cfg on map changes at this time.
+
+USER TO-DO:
+Users *MUST* put an adsql.cfg file in cfg/sourcemod/ themselves if they are 
+going to use this feature.  A sample adsql.cfg with default values for the 
+CVAR's I will support being defined in this file is included in the .zip file 
+under cfg/sourcemod/.  I will *NOT* support defining adsql_serverid in 
+adsql.cfg.  See the FAQ post.
+
+WebUI:
+UPDATES: Extensive.  Replace entire web interface.  See the "how to upgrade 
+the web interface" section of the FAQ post for instructions.
+
+- (IMPORTANT) Added conditional wrapper at top and bottom of
+include/config.php, to prevent all the various .php files comprising the 
+webui from trying to "redefine" any of the constant values set in 
+config.php if it was already read previously.
+
+USER TO-DO:
+Existing users of AdsQL need to add a few new lines to their existing
+config.php because 1) it will make the webserver stop spewing errors about the
+various constants already being defined and 2) because it seems to speed up
+the web interface CONSIDERABLY, at least for me.  "How to upgrade web
+interface" docs in FAQ post has been updated with details.
+
+- All database connections used by the web interface will now set UTF8 session
+parameters before reading/writing any data.  Depending on whether the PHP
+version and MySQL server version are new enough, the web interface will either
+use mysql_set_charset (if it can) or use a SET NAMES 'utf8' query if either
+version is too old to support mysql_set_charset.  This has been tested fairly
+hard and I can't see it having any effect at all on new or existing ads in the
+database (or their proper display in any of the games we have servers for).
+
+- Renamed the web/adsql/style.css file to web/adsql/style.css.default in the
+distribution .zip file, to protect the style.css already present on the web
+host for existing users who are upgrading their web interface.  New users of
+AdsQL WebUI will need to copy web/adsql/style.css.default to
+web/adsql/style.css before uploading to their web host, install docs updated
+to that effect, as well as the "how to upgrade my web interface" section in
+the FAQ post.
+
+- Add PHP trim() function to remove any leading and trailing whitespace and other
+"noise" characters from the server ID input field and the game type listbox when 
+adding or editing ads.  Without doing this there will be a LOT of spaces at the end
+of the field when the gamesrvid input text is written to the database.  Not sure 
+this would cause any actual problems, but it does make things look a little weird 
+when the plugin lists the ads it found.  Decided to do the same thing with the 
+game type field as well, in case it matters (I have never seen the first problem 
+with it... *shrug*).  Both have been pretty well tested with editing existing ads 
+and creating new ones (and then editing those too).
+
+USER TO-DO:
+Due to the possibility that extra whitespace at the end of the server ID field
+(and maybe even the Game Types field) in ad database records could cause problems 
+selecting ads based on the server ID values (and possibly even game types), it is 
+strongly recommended that *ALL* existing users of AdsQL use the updated (1.7.7) web 
+interface to edit EACH EXISTING AD.  You do not have to actually change anything in 
+the ads -- simply click the Edit (pencil) icon for the ad, then click the Change 
+Advertisement submit button in the bottom right of the ad editor page.  This will 
+cause the PHP trim() function fixes in the 1.7.7 WebUI to strip off the extra 
+whitespace from the game types and server ID fields, thus "fixing" these
+fields to only contain needed data without whitespace, etc. that could affect
+plugin SELECT's finding the desired ads.
+
+(Note: NEW ads created with the 1.7.7 WebUI will store the game type and
+server ID fields "trimmed" automatically.  It is only the existing ads that
+need "fixing").
+
+- Changed display order of ads in ads.php to ascending - this matches the
+order they are selected and displayed by the plugin.  Updated ads_process_data
+code that is used to swap the SQL record ID to go along with this as well.
+
+- Delete/Move Up/Move Down existing ads:
+Optimized loop iterations when searching for which ad the user clicked a
+delete or up/down button for by keeping track of the "low" and "high" SQL
+record ID numbers per page of ads displayed.  This speeds up form submit
+processing but also ensures we don't miss the ad's SQL ID# in case it happens
+to be lower/higher than the "count" of ads on the page.  So it should also 
+fix any chance there was in previous versions of "missing" an ad a
+user clicked a delete/move up/move down button for.  Everybody be sure to
+send Gates and Ballmer another bag of Gummi Lighthouses, if IE didn't suck
+none of this would have been necessary to code around.
+
+v1.7.7b3 - 16 Mar 2011
+- Changed method of sending "SET NAMES 'utf8';" query to database server to
+method recommended by Psychonic.  It is now performed with an SQL_FastQuery()
+in the database connector call at plugin startup.  Seems to work for me.
+
+v1.7.7b2 - 16 Mar 2011
+- Added SET NAMES 'utf8' SQL query to plugin code before doing any ads search
+queries, this sets 3 session parameters with the SQL server that help ensure
+it uses utf8 when we retrieve ads.  Thanks to Psychonic for the help!
+
+v1.7.7b - 06 Mar 2011
+- Removed timestamp output from "Firing Ad" debug log message - since it is a
+log message now there will already be a timestamp!
+
+- Updated plugin source to meet #pragma semicolon 1 code formatting
+
+v1.7.6 - 06 Mar 2011
+- PLUGIN UPDATES! No changes to web interface since 1.7.5
+- Ensure AdsQL logs all messages, not just print to console
+- Added additional debug-mode logging to monitor changes to adsql_interval
+cvar
+- Added code to ensure ad display timer is correctly replaced (and that only
+one is set up) when adsql_interval is set to non-default value in a .cfg file
+- Reset "current ad being displayed" counter to 0 anytime ads are set up or
+reloaded!
+- Added timestamp output to debug mode to show when each ad fires, useful if
+there are still any timer problems.
+
+v1.7.5 - 04 Mar 2011
+- Corrected *ALL* HTML (4.01 Transitional) standards compliance problems with
+the ENTIRE web interface, except one non-standard item which we NEED in order
+to pre-fill a default value for the Server ID's text input field, or in the
+case of editing ads, to pre-fill the Server ID's text input field with the
+current value from the database.
+- The web interface is now compatible with Internet Explorer (from 1.7.3
+fixes).
+- THE ENTIRE WEB INTERFACE NEEDS TO BE REPLACED.  Refer to installation
+instructions for the web interface on Page 1 (original post) - but note that
+you will need to replace *ALL* existing files and sub-folders in the adsql/
+directory on your web host from the web/adsql folder in the unpacked 
+adsql-v1.7.5.zip file.  The existing include/config.php file on your web host
+will be preserved -- the sample config file in the .zip file has a different
+filename (and will from now on to protect upgraders).
+- Corrected bug in 1.7.3 web interface that would prevent users with more than
+25 ads in the database from deleting or changing the order of ads.
+- Added "Easiest way to upgrade my web interface" section to
+Troubleshooting/FAQ post
+- No changes to the plugin since 1.7.2
+
+v1.7.3 - 03 Mar 2011
+- Fixed IE problems with deleting ads and moving them up/down on the main ads
+page (ads.php).  Microsoft needs to get with the program and fix their HTML
+standards compliance issues regarding image type form submission values.  Or
+just admit to the world that they would rather suck on Gummi Lighthouses than
+follow standards they didn't dream up.
+- Updated files in web interface (these files need to be replaced):
+ about.php
+ ads.php
+ ads_process_data.php
+ index.php
+ include/header.php
+- Plugin is unchanged from 1.7.2.
+
+v1.7.2 - 02 Mar 2011
+- Move the SQL_TConnect call to open database connection back to
+OnPluginStart.  With it in OnMapStart multiple DB connections per plugin
+instance occurred.
+- Bumped version of web interface about.php to 1.6.1a, the version of last
+actual changes made.
+- Users of versions 1.7.0 and 1.7.1 need to update their plugin to 1.7.2 to
+avoid leaving lots of idle/sleeping db connections
+- No changes (except 1.6.1a version bump noted above) in web interface
+
+v1.7.1 - 28 Feb 2011
+- Make plugin check (by newer last modified timestamp) at each map start for
+an updated serverid.txt and read the new server ID if file has changed.
+- No changes to web interface since 1.6.1a, only the plugin is updated in
+1.7.1.
+
+v1.7.0 - 26 Feb 2011
+- Fixed the "more than one ad displays at a time" / multiple ad display timers
+running problem. Tested for correct behavior in L4D2 including first map after
+a server boot, reloading ads, changing maps, and leaving the server (leaving
+no players) and then coming back. Also tested all of the above with CS:S as a
+"control" (where I have not seen the problem).
+- Cleaned up/reworked plugin code to run *ALL* ads searches and reloads
+through one function.
+- Added adsql_debug cvar.  Defaults to 0 (no debug logging).  Set to 1 if you
+want lots of debug logging to help trace code flow.
+- Moved the SQL_TConnect() call that opens the database connection from
+OnPluginStart to OnMapStart.  L4D games hibernate after starting up and will
+call OnMapStart when they wake up.  Other games like CS:S, TF2, etc.
+will call OnMapStart before we need the database to do anything anyway.  No
+need to open a DB connection until we need it.
+- Added (non-debug) log message to show the server ID being used to search for
+ads when a server ID is defined.
+- No changes to web interface since 1.6.1a, only the plugin is updated in 1.7.0.
+
+v1.6.2 - 22 Feb 2011
+- Fixed public cvar adsql_version so it actually shows up in utils such as
+HLSW.  Credit goes to the hlstatsx.sp coders for a code example of how to deal
+with a2s_rules apparently being broken on Linux. This change seemed to help
+the adsql_version cvar show up on our (Linux) TF2 and CS:S servers when I
+couldn't get it to show it before.
+- Made adsql_serverid a public cvar so it can be seen in utils like HLSW. This
+should be useful for server operators with lots of servers to configure ads
+for.  It *MIGHT* take a map change before the public cvars show up in HLSW,
+not sure why and I'm not sure HLSW is a good proving ground either. :)
+- No changes to the web interface in this version from 1.6.1a, only the
+plugin.
+- Interesting discovery -- On a map change, the plugin apparently DOES NOT
+reset the server ID! The server ID after the map change was still what I had
+set it to via rcon in the previous map. This could mean that we don't have to
+define the server ID in a serverid.txt file, but more testing is needed.
+
+v1.6.1a - 22 Feb 2011
+- Fixed the Server ID text field being zero'd out on every add or edit. The
+Server ID text field will be left alone now even if it does get ignored
+because the Game Type is set to All Games. A side benefit of this is if you
+choose to edit the ad later to only apply to some game types, you still have
+the contents of the Server ID's field in case you want them.
+- Users of 1.6.1 and prior only need the fixed ads_process_data.php from the
+adsql-v1.6.1a.zip file -- replace this file in the adsql/ folder on your web
+host
+- No changes to plugin in 1.6.1a
+- Users of 1.6.1 and prior will need to edit their ads to ensure the desired
+Server ID's are set for those ads (either 'All' or specific server ID's)
+
+v1.6.1
+22 Feb 2011
+- Changed web compiler setting to build for 1.1 sourcemod series (the compiled
+.smx works fine on my servers running 1.3.6) - this is another way to help
+make it easier for folks to try/use this plugin
+21 Feb 2011
+- Changed plugin name from sm_adsql to just adsql
+- Changed sm_adsql_interval CVAR to adsql_interval
+- Changed sm_adsql_serverid CVAR to adsql_serverid
+- Changed sm_adsql_version public CVAR to adsql_version
+- Verified that the Advertisements Manager web interface does not support
+setting server ID strings containing spaces. This could be a lot of work to
+try to code support for and I'm not sure it is a good use of my time. Keep the
+server ID definitions simple -- alphanumeric characters with no spaces and
+definitely no commas -- and everything will work fine.
+
+v1.6.0 - 20 Feb 2011
+- Original release on Sourcemod forums as a fork from <eVa>Dog/Strontium Dog's
+original MySQL Advertisements plugin and web interface, which are no longer
+being maintained/updated.
+

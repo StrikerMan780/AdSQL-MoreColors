@@ -1,0 +1,22 @@
+<?php
+/* new line below starting in AdsQL 1.7.7:	*/
+if (!defined("HAVE_ADSQL_CONFIG")) {
+
+define("DB_SERVER", "localhost");
+define("DB_USER", "adsql");
+define("DB_PASS", "secretpw");
+define("DB_NAME", "adsql");
+
+define("EMAIL_FROM_NAME", "AdsQL");
+define("EMAIL_FROM_ADDR", "adsql@example.net");
+define("EMAIL_WELCOME", false);
+
+define("COMMUNITYNAME", "Penguins With Nerf Guns");
+
+// What are your Admins called?
+define("ADMIN", "Admins");
+
+/* new line below starting in AdsQL 1.7.7	*/
+define("HAVE_ADSQL_CONFIG", true); }
+
+?>
